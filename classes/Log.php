@@ -4,46 +4,50 @@ namespace CronLogger;
 
 use CronLogger\Components\Database;
 
-class Log  extends Database {
+class Log extends Database
+{
 
 	private $log_id = null;
-	public $errors = array();
+	public $errors = [];
 	public string $table;
 
-	public function init() {
+	public function init()
+	{
 		$this->table = $this->wpdb->prefix . Plugin::TABLE_LOGS;
 	}
 
-	function start( $info = "" ): void {
-		if ( $this->log_id != null ) {
-			error_log( "Only start logger once per session.", 4 );
+	function start($info = ""): void
+	{
+		if ($this->log_id != null) {
+			error_log("Only start logger once per session.", 4);
 
 			return;
 		}
 		$this->wpdb->insert(
 			$this->table,
-			array(
+			[
 				'executed' => Plugin::instance()->timer->getStart(),
 				'duration' => 0,
 				'info'     => "Running ⏳ $info",
-			),
-			array(
+			],
+			[
 				'%d',
 				'%d',
 				'%s',
-			)
+			]
 		);
 		$this->log_id = $this->wpdb->insert_id;
 	}
 
-	function update( $duration, $info = null ): int {
+	function update($duration, $info = null): int
+	{
 
-		if ( $this->log_id == null ) {
+		if ($this->log_id == null) {
 			$this->start();
 		}
-		$data        = array( 'duration' => $duration );
-		$data_format = array( '%d' );
-		if ( $info != null ) {
+		$data        = ['duration' => $duration];
+		$data_format = ['%d'];
+		if ($info != null) {
 			$data['info']  = $info;
 			$data_format[] = '%s';
 		}
@@ -51,31 +55,31 @@ class Log  extends Database {
 		return $this->wpdb->update(
 			$this->table,
 			$data,
-			array(
+			[
 				'id' => $this->log_id,
-			),
+			],
 			$data_format,
-			array(
+			[
 				'%d',
-			)
+			]
 		);
 	}
 
 	function addInfo( $message, $duration = null ): void {
 		$result = $this->wpdb->insert(
 			$this->table,
-			array(
+			[
 				'parent_id' => $this->log_id,
 				'info'      => $message,
 				'executed'  => time(),
 				'duration'  => $duration,
-			),
-			array(
+			],
+			[
 				'%d',
 				'%s',
 				'%d',
 				'%d',
-			)
+			]
 		);
 		if ( $result == false ) {
 			echo $this->wpdb->last_query;
@@ -90,13 +94,14 @@ class Log  extends Database {
 
 	}
 
-	function getList( $args = array() ): array {
+	function getList($args = []): array
+	{
 		$args = (object) array_merge(
-			array(
+			[
 				"count"       => 15,
 				"page"        => 1,
 				"min_seconds" => null,
-			),
+			],
 			$args
 		);
 		$count  = $args->count;
@@ -131,9 +136,10 @@ class Log  extends Database {
 		$this->wpdb->query( "DELETE FROM $table WHERE id IN ($parentIds)" );
 	}
 
-	function createTables() {
+	function createTables()
+	{
 		parent::createTables();
-		dbDelta( "CREATE TABLE IF NOT EXISTS " . $this->table . " 
+		dbDelta("CREATE TABLE IF NOT EXISTS " . $this->table . "
 		(
 		 id bigint(20) unsigned not null auto_increment,
 		 parent_id bigint(20) unsigned default null,
@@ -144,6 +150,6 @@ class Log  extends Database {
 		 key ( executed ),
 		 key (duration),
 		 key (parent_id)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 	}
 }

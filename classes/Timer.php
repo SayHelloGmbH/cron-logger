@@ -2,21 +2,23 @@
 
 namespace CronLogger;
 
-
-class Timer {
+class Timer
+{
 
 	private int $start;
 
-	public function __construct() {
+	public function __construct()
+	{
 		$this->start = time();
 	}
 
-	function getStart(): int {
+	function getStart(): int
+	{
 		return $this->start;
 	}
 
-	function getDuration(): int {
+	function getDuration(): int
+	{
 		return time() - $this->start;
 	}
-
 }

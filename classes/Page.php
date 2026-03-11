@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: edward
@@ -8,10 +9,10 @@
 
 namespace CronLogger;
 
-
 use CronLogger\Components\Component;
 
-class Page extends Component {
+class Page extends Component
+{
 
 	const ARG_ITEMS = "cron-logs-items";
 
@@ -19,53 +20,57 @@ class Page extends Component {
 
 	const ARG_DURATION_MIN = "cron-logs-dm";
 
-	public function onCreate() {
-		add_action( 'admin_menu', array( $this, 'menu_pages' ) );
+	public function onCreate()
+	{
+		add_action('admin_menu', [$this, 'menu_pages']);
 	}
 
-	public function menu_pages() {
+	public function menu_pages()
+	{
 		add_submenu_page(
 			'tools.php',
-			__( 'Cron Logs', Plugin::DOMAIN ),
-			__( 'Cron Logs', Plugin::DOMAIN ),
+			__('Cron Logs', Plugin::DOMAIN),
+			__('Cron Logs', Plugin::DOMAIN),
 			'manage_options',
 			'cron-logs',
-			array(
+			[
 				$this,
 				"render",
-			)
+			]
 		);
 	}
 
-	function getArgs() {
-		$args        = (object) array();
+	function getArgs()
+	{
+		$args        = (object) [];
 		$args->items = 10;
-		if ( ! empty( $_GET[ self::ARG_ITEMS ] ) && intval( $_GET[ self::ARG_ITEMS ] ) > 0 ) {
-			$args->items = intval( $_GET[ self::ARG_ITEMS ] );
+		if (! empty($_GET[self::ARG_ITEMS]) && intval($_GET[self::ARG_ITEMS]) > 0) {
+			$args->items = intval($_GET[self::ARG_ITEMS]);
 		}
 		$args->page = 1;
-		if ( ! empty( $_GET[ self::ARG_PAGE ] ) && intval( $_GET[ self::ARG_PAGE ] ) > 0 ) {
-			$args->page = intval( $_GET[ self::ARG_PAGE ] );
+		if (! empty($_GET[self::ARG_PAGE]) && intval($_GET[self::ARG_PAGE]) > 0) {
+			$args->page = intval($_GET[self::ARG_PAGE]);
 		}
 		$args->duration_min = null;
-		if ( ! empty( $_GET[ self::ARG_DURATION_MIN ] ) ) {
-			$args->duration_min = intval( $_GET[ self::ARG_DURATION_MIN ] );
+		if (! empty($_GET[self::ARG_DURATION_MIN])) {
+			$args->duration_min = intval($_GET[self::ARG_DURATION_MIN]);
 		}
 
 		return $args;
 	}
 
-	function render() {
+	function render()
+	{
 		?>
-        <div class="wrap">
-            <h2>Cron Logs</h2>
+		<div class="wrap">
+			<h2>Cron Logs</h2>
 			<?php
 			$timezone = wp_timezone_string();
 			try {
-				$time = new \DateTime( "now", new \DateTimeZone( $timezone ) );
-			} catch ( \Exception $e ) {
-				echo "<p>" . __( "Missing »timezone_string« entry in options table. Please fix! Otherwise execution times could be wrong.", Plugin::DOMAIN ) . "</p>";
-				$time = new \DateTime( 'now' );
+				$time = new \DateTime("now", new \DateTimeZone($timezone));
+			} catch (\Exception $e) {
+				echo "<p>" . __("Missing »timezone_string« entry in options table. Please fix! Otherwise execution times could be wrong.", Plugin::DOMAIN) . "</p>";
+				$time = new \DateTime('now');
 			}
 			$args = $this->getArgs();
 			?>
@@ -94,7 +99,7 @@ class Page extends Component {
                 </label>
 
 				<?php
-				submit_button( __( "Filter", Plugin::DOMAIN ) );
+				submit_button(__("Filter", Plugin::DOMAIN));
 				?>
             </form>
 
@@ -140,41 +145,38 @@ class Page extends Component {
                         </tr>
 						<?php
 					}
-				}
-				?>
-                </tbody>
-            </table>
-        </div>
-        <script>
-            jQuery(function ($) {
-                const $logs = $('[data-log-id]');
-                $logs.on('click', function () {
-                    const id = $(this).attr('data-log-id');
-                    console.log('clicked', id);
-                    $('[data-parent-id=' + id + ']').toggle();
-                });
-                let isVisible = true;
-                $('[name=toggle_logs]').on('click', function () {
-                    if (isVisible) {
-                        $('[data-parent-id]').hide();
-                    } else {
-                        $('[data-log-id]').trigger('click');
-                    }
-                    isVisible = !isVisible;
-                });
-            });
-        </script>
+					?>
+				</tbody>
+			</table>
+		</div>
+		<script>
+			jQuery(function($) {
+				const $logs = $('[data-log-id]');
+				$logs.on('click', function() {
+					const id = $(this).attr('data-log-id');
+					console.log('clicked', id);
+					$('[data-parent-id=' + id + ']').toggle();
+				});
+				let isVisible = true;
+				$('[name=toggle_logs]').on('click', function() {
+					if (isVisible) {
+						$('[data-parent-id]').hide();
+					} else {
+						$('[data-log-id]').trigger('click');
+					}
+					isVisible = !isVisible;
+				});
+			});
+		</script>
 		<?php
-
 	}
 
-	private function getDurationString($duration ): string {
-		if ( $duration == null ) {
+	private function getDurationString($duration): string
+	{
+		if ($duration == null) {
 			return "";
 		}
 
 		return $duration . "s";
 	}
-
 }
-

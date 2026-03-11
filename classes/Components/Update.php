@@ -3,8 +3,8 @@
 
 namespace CronLogger\Components;
 
-
-abstract class Update {
+abstract class Update
+{
 
 	/**
 	 * version of the final data structure
@@ -27,17 +27,16 @@ abstract class Update {
 	/**
 	 * check for updates
 	 */
-	function checkUpdates() {
+	function checkUpdates()
+	{
 		$current_version = $this->getCurrentVersion();
 
-		for ( $i = $current_version + 1; $i <= $this->getVersion(); $i ++ ) {
+		for ($i = $current_version + 1; $i <= $this->getVersion(); $i++) {
 			$method = "update_{$i}";
-			if ( method_exists( $this, $method ) ) {
+			if (method_exists($this, $method)) {
 				$this->$method();
-				$this->setCurrentVersion( $i );
+				$this->setCurrentVersion($i);
 			}
 		}
-
 	}
-
 }

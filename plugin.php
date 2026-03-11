@@ -16,9 +16,10 @@
 
 namespace CronLogger;
 
-require_once dirname( __FILE__ ) . "/vendor/autoload.php";
+require_once dirname(__FILE__) . "/vendor/autoload.php";
 
-class Plugin extends Components\Plugin {
+class Plugin extends Components\Plugin
+{
 
 	/**
 	 * ---------------------------------------------
@@ -43,7 +44,8 @@ class Plugin extends Components\Plugin {
 	/**
 	 * Plugin constructor
 	 */
-	function onCreate(): void {
+	function onCreate(): void
+	{
 
 		$this->loadTextdomain(
 			Plugin::DOMAIN,
@@ -51,16 +53,17 @@ class Plugin extends Components\Plugin {
 		);
 
 		$this->timer    = new Timer();
-		$this->log      = new Log( $this );
-		new Updates( $this );
-		new Services( $this );
-		new Page( $this );
+		$this->log      = new Log($this);
+		new Updates($this);
+		new Services($this);
+		new Page($this);
 	}
 
 	/**
 	 * on activation
 	 */
-	function onSiteActivation(): void {
+	function onSiteActivation(): void
+	{
 		$this->log->createTables();
 	}
 }
