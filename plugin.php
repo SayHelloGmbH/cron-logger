@@ -5,7 +5,7 @@
  * Description: Logs for wp-cron.php runs.
  * Version: 1.2.2
  * Requires at least: 5.3
- * Tested up to: 6.5.0
+ * Tested up to: 6.9.3
  * Author: Palasthotel <rezeption@palasthotel.de> (Edward Bock)
  * Author URI: https://palasthotel.de
  * Update URI: https://github.com/SayHelloGmbH/cron-logger
