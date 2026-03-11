@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Cron Logger
  * Description: Logs for wp-cron.php runs.
@@ -7,6 +8,7 @@
  * Tested up to: 6.5.0
  * Author: Palasthotel <rezeption@palasthotel.de> (Edward Bock)
  * Author URI: https://palasthotel.de
+ * Update URI: https://github.com/SayHelloGmbH/cron-logger
  * Domain Path: /languages
  * Text Domain: cron-logger
  * Requires PHP: 8.0
