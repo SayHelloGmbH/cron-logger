@@ -61,7 +61,7 @@ class Page extends Component
 
 	function render()
 	{
-		?>
+?>
 		<div class="wrap">
 			<h2>Cron Logs</h2>
 			<?php
@@ -75,75 +75,76 @@ class Page extends Component
 			$args = $this->getArgs();
 			?>
 
-            <form method="GET" action="<?php echo admin_url( 'tools.php' ); ?>">
-                <input type="hidden" name="page" value="cron-logs"/>
-                <label>
-					<?php _e( 'Minimum duration of x seconds', Plugin::DOMAIN ); ?><br>
-                    <input type="number"
-                           name="<?php echo self::ARG_DURATION_MIN ?>"
-                           placeholder="x"
-                           value="<?php echo $args->duration_min; ?>"/>
-                </label><br>
-                <label>
-					<?php _e( "Page", Plugin::DOMAIN ); ?><br>
-                    <input type="number" min="1"
-                           name="<?php echo self::ARG_PAGE ?>" required
-                           value="<?php echo $args->page; ?>"/>
-                </label><br>
-                <label>
-					<?php _e( 'Logs per Page', Plugin::DOMAIN ); ?><br>
-                    <input type="number" min="1" max="50" maxlength="2"
-                           name="<?php echo self::ARG_ITEMS ?>"
-                           required
-                           value="<?php echo $args->items; ?>"/>
-                </label>
+			<form method="GET" action="<?php echo esc_url(admin_url('tools.php')); ?>">
+				<input type="hidden" name="page" value="cron-logs" />
+				<label>
+					<?php _e('Minimum duration of x seconds', Plugin::DOMAIN); ?><br>
+					<input type="number"
+						name="<?php echo esc_attr(self::ARG_DURATION_MIN) ?>"
+						placeholder="x"
+						value="<?php echo esc_attr($args->duration_min); ?>" />
+				</label><br>
+				<label>
+					<?php _e("Page", Plugin::DOMAIN); ?><br>
+					<input type="number" min="1"
+						name="<?php echo esc_attr(self::ARG_PAGE) ?>" required
+						value="<?php echo esc_attr($args->page); ?>" />
+				</label><br>
+				<label>
+					<?php _e('Logs per Page', Plugin::DOMAIN); ?><br>
+					<input type="number" min="1" max="50" maxlength="2"
+						name="<?php echo esc_attr(self::ARG_ITEMS) ?>"
+						required
+						value="<?php echo esc_attr($args->items); ?>" />
+				</label>
 
 				<?php
 				submit_button(__("Filter", Plugin::DOMAIN));
 				?>
-            </form>
+			</form>
 
-			<?php submit_button( __( 'Toggle open/close log details', Plugin::DOMAIN ), 'small', "toggle_logs" ); ?>
+			<?php submit_button(__('Toggle open/close log details', Plugin::DOMAIN), 'small', "toggle_logs"); ?>
 
-            <table class="widefat striped">
-                <thead>
-                <tr>
-                    <th style="width: 145px;" scope="col"
-                        title="<?php echo $timezone; ?>">
-						<?php _e( 'Executed', Plugin::DOMAIN ); ?>
-                    </th>
-                    <th style="width: 90px;" scope="col"><?php _e( 'Duration', Plugin::DOMAIN ); ?></th>
-                    <th scope="col"><?php _e( 'Info', Plugin::DOMAIN ); ?></th>
-                </tr>
-                </thead>
-                <tbody>
-				<?php
-				$list = $this->plugin->log->getList( array(
-					"count"       => $args->items,
-					"page"        => $args->page,
-					"min_seconds" => $args->duration_min,
-				) );
-				foreach ( $list as $log ) {
-					?>
-                    <tr style="cursor: pointer"
-                        data-log-id="<?php echo $log->id; ?>">
-                        <td style="border-top: 3px solid #333;"><?php
-							$time->setTimestamp( $log->executed );
-							echo $time->format( "Y-m-d H:i:s" );
-							?></td>
-                        <td style="border-top: 3px solid #333;"><?php echo $this->getDurationString( $log->duration ); ?></td>
-                        <td style="border-top: 3px solid #333;"><?php echo $log->info; ?></td>
-                    </tr>
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th style="width: 145px;" scope="col"
+							title="<?php echo esc_attr($timezone); ?>">
+							<?php _e('Executed', Plugin::DOMAIN); ?>
+						</th>
+						<th style="width: 90px;" scope="col"><?php _e('Duration', Plugin::DOMAIN); ?></th>
+						<th scope="col"><?php _e('Info', Plugin::DOMAIN); ?></th>
+					</tr>
+				</thead>
+				<tbody>
 					<?php
-					$sublist = $this->plugin->log->getSublist( $log->id );
-					foreach ( $sublist as $sub ) {
-						?>
-                        <tr data-parent-id="<?php echo $log->id; ?>">
-                            <td></td>
-                            <td><?php echo $this->getDurationString( $sub->duration ); ?></td>
-                            <td><?php echo $sub->info; ?></td>
-                        </tr>
+					$list = $this->plugin->log->getList([
+						"count"       => $args->items,
+						"page"        => $args->page,
+						"min_seconds" => $args->duration_min,
+					]);
+					foreach ($list as $log) {
+					?>
+						<tr style="cursor: pointer"
+							data-log-id="<?php echo $log->id; ?>">
+							<td style="border-top: 3px solid #333;"><?php
+																	$time->setTimestamp($log->executed);
+																	echo esc_html($time->format("Y-m-d H:i:s"));
+																	?></td>
+							<td style="border-top: 3px solid #333;"><?php echo esc_html($this->getDurationString($log->duration)); ?></td>
+							<td style="border-top: 3px solid #333;"><?php echo wp_kses_post($log->info); ?></td>
+						</tr>
 						<?php
+						$sublist = $this->plugin->log->getSublist($log->id);
+						foreach ($sublist as $sub) {
+						?>
+							<tr data-parent-id="<?php echo esc_attr($log->id); ?>">
+								<td></td>
+								<td><?php echo esc_html($this->getDurationString($sub->duration)); ?></td>
+								<td><?php echo wp_kses_post($sub->info); ?></td>
+							</tr>
+					<?php
+						}
 					}
 					?>
 				</tbody>
@@ -168,7 +169,7 @@ class Page extends Component
 				});
 			});
 		</script>
-		<?php
+<?php
 	}
 
 	private function getDurationString($duration): string
